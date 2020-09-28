@@ -1,0 +1,23 @@
+SELECT
+    pm.program_name As Program,
+    rcm.Risk_Type As Category,
+    count(Risk_Type) As Risk
+FROM
+    aurorademo_2.program_master pm
+        INNER JOIN
+    aurorademo_2.project_master p ON p.Aurora_Program_Seq_fk = pm.Aurora_Program_Seq
+        INNER JOIN
+    aurorademo_2.Risk_Log rl
+		INNER JOIN
+	aurorademo_2.rag_status rs on rs.Aurora_RAG_Status_Seq = rl.Aurora_RAG_Status_Seq_fk
+		INNER JOIN
+	aurorademo_2.risk_log_indicator rli on rli.Aurora_Risk_Seq_pk_fk = rl.Aurora_Risk_Seq
+		INNER JOIN
+	aurorademo_2.risk_indicator_master rim on rim.Aurora_Risk_Indicator_Seq = rli.Aurora_Risk_Indicator_Seq_pk_fk
+        INNER JOIN
+    aurorademo_2.Risk_Category_Master rcm ON rim.Aurora_Risk_Category_Seq_fk = rcm.Aurora_Risk_Category_Seq
+WHERE
+	rl.Aurora_Project_Seq_fk = p.Aurora_Project_Seq
+	&& p.Aurora_Program_Seq_fk = pm.Aurora_Program_Seq
+	&& rim.Aurora_Risk_Category_Seq_fk = rcm.Aurora_Risk_Category_Seq
+group by Program_Name,risk_type order by Program_Name desc;
